@@ -17,7 +17,7 @@ public class Agent {
     int corX, corY, status;
     
     public Agent() {
-        this.corX = 0;
+        this.corX = 4;
         this.corY = 0;
         this.status = 1;
     }
