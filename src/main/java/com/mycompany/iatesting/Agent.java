@@ -53,4 +53,8 @@ public class Agent {
     las coordenadas actuales con las que siguen.
     */
     
+    /*
+    TODO: Método para escanear las casillas adyacentes
+    */
+    
 }

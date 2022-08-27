@@ -29,7 +29,6 @@ public class IATesting {
         } 
         
         // CREACIÓN DEL AGENTE DE NOMBRE AVELINE
-        
         Agent aveline = new Agent();
      
         // CREACIÓN DEL ENEMIGO LLAMADO ERINA
@@ -66,7 +65,7 @@ public class IATesting {
         field[aveline.getCorX()][aveline.getCorY()] = 1;
 
         // Colocar a Erina
-        int eVal = 1;
+        int eVal = 1; // Variable para evaluar el while
         while(eVal == 1) {
             if(field[erina.getCoorX()][erina.getCoorY()] == 0) {
                 field[erina.getCoorX()][erina.getCoorY()] = 2;
@@ -78,7 +77,7 @@ public class IATesting {
        
         
         // Colocar el tesoro
-        int tVal = 1;
+        int tVal = 1; // Variable para evaluar el while
         while(tVal == 1) {
             if(field[tesoro.getCorX()][tesoro.getCorY()] == 0) {
                 field[tesoro.getCorX()][tesoro.getCorY()] = 4;
@@ -90,7 +89,7 @@ public class IATesting {
         
         // Colocar los pozos
         // Pozo 1
-        int p1Val = 1;
+        int p1Val = 1; // Variable para evaluar el while
         while(p1Val == 1) {
             if(field[pozo1.getCorX()][pozo2.getCorY()] == 0) {
                 field[pozo1.getCorX()][pozo2.getCorY()] = 3;
