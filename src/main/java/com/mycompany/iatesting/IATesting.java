@@ -18,7 +18,7 @@ public class IATesting {
         Tanto los pozos como el teesoro seran estaticos y ellos y el monstruo
         serán generados al azar.
         */
-        // GENERACIÓN DE CAMPO DE JUEGO Y LLENADO CON 0s
+        // GENERACIÓN DE CAMPO DE JUEGO Y LLENADO CON LOS VALORES
         int[][] field = new int[5][5];
         
         for (int i=0; i < field.length; i++) {
@@ -110,18 +110,19 @@ public class IATesting {
         }
 
         
-        //Comprobar lo que hay dentro de la matriz
-        for (int i=0; i < field.length; i++) {
-            for (int j=0; j < field.length; j++) {
-                System.out.print("[" + field[i][j] + "]");
-            }
-            System.out.print("\n");
-        }
-        
         // ~~~~~~~~~~~~~~~~~~~ BUCLE PRINCIPAL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // GAMELOOP
         int game = 1;
         while(game == 1) {
+            
+            // ~~~ MOSTRAR LA MATRIZ EN PANTALLA ~~~
+            for (int i=0; i < field.length; i++) {
+                for (int j=0; j < field.length; j++) {
+                    System.out.print("[" + field[i][j] + "]");
+                }
+                System.out.print("\n");
+            }
+            
             //ESCANEAR CASILLAS ADYACENTES
             // Matriz para almacenar los datos de las casillas adyacentes: valor y coordenadas
             int[][] data = new int[8][3];
@@ -134,11 +135,11 @@ public class IATesting {
             Las auxiliares 1: Empiezan en la esquina inferior derecha
             Las auxiliares 2: Empiezan en la esquina superior izquierda
             */
-            int auxX = currentX - 1;
-            int auxY = currentY - 1;
+            int auxX = currentX + 1;
+            int auxY = currentY + 1;
 
-            int aux2X = currentX + 1;
-            int aux2Y = currentY + 1;
+            int aux2X = currentX - 1;
+            int aux2Y = currentY - 1;
             
             // Variable auxiliar para el arreglo de datos
             int dataAux = 0;
@@ -159,24 +160,24 @@ public class IATesting {
                         data[dataAux][2] = auxY;
                         dataAux++;
                 }
-                auxY++;
+                auxX--;
                 
             }
             //Se reinician las coordenadas auxiliares
-            auxX = currentX - 1;
-            auxY = currentY - 1;
+            auxX = currentX + 1;
+            auxY = currentY;
             
             /*
-            El bucle inicia en la esquina inferior derecha y continua hacia la izquierda en X
+            El bucle inicia debajo de la coordenada y continua hacia la izquierda en X
             */
-            for(int c = 1; c < 4; c++) {
+            for(int c = 1; c < 3; c++) {
                 if(auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
                     data[dataAux][0] = field[auxX][auxY];
                     data[dataAux][1] = auxX;
                     data[dataAux][2] = auxY;
                     dataAux++;
                 }
-                auxX++;
+                auxY--;
             }
             
             /*
@@ -190,25 +191,28 @@ public class IATesting {
                    data[dataAux][2] = aux2Y;
                    dataAux++;
                 }
-                aux2X--;
+                aux2Y++;
             }
             
-            aux2X = currentX + 1;
-            aux2Y = currentY + 1;
+            aux2X = currentX;
+            aux2Y = currentY - 1;
             
-            for(int c = 1; c < 3; c++) {
+            for(int c = 1; c < 2; c++) {
                 if(aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
                    data[dataAux][0] = field[aux2X][aux2Y];
                    data[dataAux][1] = aux2X;
                    data[dataAux][2] = aux2Y;
                 }
-                aux2Y--;
             }
             
-            
-            for(int i = 0; i < 8; i++) {
+            //Imprime los valores del arreglo de datos
+            /*for(int i = 0; i < 8; i++) {
                 System.out.println("Valor: " + data[i][0] + " X: " + data[i][1] + " Y: " + data[i][2]);
-            }
+            }*/
+            
+            //~~~~ FUNCION DE MOVIMIENTO DE AVELINE ~~~~
+            int [] basicMovementArray = new int[4];
+            basicMovementArray[0] = 
             
             game = 0;
         }

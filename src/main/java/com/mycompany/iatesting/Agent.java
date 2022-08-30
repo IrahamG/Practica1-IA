@@ -53,14 +53,6 @@ public class Agent {
     las coordenadas actuales con las que siguen.
     */
     
-    /*
-    TODO: Método para escanear las casillas adyacentes
-    */
-    
-    /*
-    TODO: Una vez escaneadas las casillas adyacentes guardar en un Hashmap las coordenadas y el valor
-    de la casilla
-    */
     
     
 }
