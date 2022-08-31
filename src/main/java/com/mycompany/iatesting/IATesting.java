@@ -1,5 +1,8 @@
 package com.mycompany.iatesting;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
  *
  * @author chaos
@@ -112,17 +115,19 @@ public class IATesting {
         
         // ~~~~~~~~~~~~~~~~~~~ BUCLE PRINCIPAL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // GAMELOOP
-        int game = 1;
-        while(game == 1) {
-            
+        int game = 8;
+        while(game != 1) {
+
+
             // ~~~ MOSTRAR LA MATRIZ EN PANTALLA ~~~
-            for (int i=0; i < field.length; i++) {
-                for (int j=0; j < field.length; j++) {
+            for (int i = 0; i < field.length; i++) {
+                for (int j = 0; j < field.length; j++) {
                     System.out.print("[" + field[i][j] + "]");
                 }
                 System.out.print("\n");
             }
-            
+            System.out.print("\n");
+
             //ESCANEAR CASILLAS ADYACENTES
             // Matriz para almacenar los datos de las casillas adyacentes: valor y coordenadas
             int[][] data = new int[8][3];
@@ -140,12 +145,12 @@ public class IATesting {
 
             int aux2X = currentX - 1;
             int aux2Y = currentY - 1;
-            
+
             // Variable auxiliar para el arreglo de datos
             int dataAux = 0;
-            
+
             //Coordenadas auxiliares (posición en la esquina superior izquiera de Aveline)
-            
+
             //~~~~~~Bucles para almacenar las casillas en un arreglo.~~~~~
             /*
             El bucle inicia en la esquina inferior derecha y continua hacia arriba.
@@ -153,15 +158,15 @@ public class IATesting {
             Si las coordenadas se encuentran se guarda en el arreglo un arreglo de la siguiente manera:
             [valor, X, Y]
             */
-            for(int c = 1; c < 4; c++) {
-                if(auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
-                        data[dataAux][0] = field[auxX][auxY];
-                        data[dataAux][1] = auxX;
-                        data[dataAux][2] = auxY;
-                        dataAux++;
+            for (int c = 1; c < 4; c++) {
+                if (auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
+                    data[dataAux][0] = field[auxX][auxY];
+                    data[dataAux][1] = auxX;
+                    data[dataAux][2] = auxY;
+                    dataAux++;
                 }
                 auxX--;
-                
+
             }
             //Se reinician las coordenadas auxiliares
             auxX = currentX + 1;
@@ -170,8 +175,8 @@ public class IATesting {
             /*
             El bucle inicia debajo de la coordenada y continua hacia la izquierda en X
             */
-            for(int c = 1; c < 3; c++) {
-                if(auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
+            for (int c = 1; c < 3; c++) {
+                if (auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
                     data[dataAux][0] = field[auxX][auxY];
                     data[dataAux][1] = auxX;
                     data[dataAux][2] = auxY;
@@ -184,37 +189,76 @@ public class IATesting {
             El bucle inicia en la esquina superior izquiera y continua hacia la derecha en X
             Utiliza las variables auxiliares 2
             */
-            for(int c = 1; c < 3; c++) {
-                if(aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
-                   data[dataAux][0] = field[aux2X][aux2Y];
-                   data[dataAux][1] = aux2X;
-                   data[dataAux][2] = aux2Y;
-                   dataAux++;
+            for (int c = 1; c < 3; c++) {
+                if (aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
+                    data[dataAux][0] = field[aux2X][aux2Y];
+                    data[dataAux][1] = aux2X;
+                    data[dataAux][2] = aux2Y;
+                    dataAux++;
                 }
                 aux2Y++;
             }
-            
+
             aux2X = currentX;
             aux2Y = currentY - 1;
-            
-            for(int c = 1; c < 2; c++) {
-                if(aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
-                   data[dataAux][0] = field[aux2X][aux2Y];
-                   data[dataAux][1] = aux2X;
-                   data[dataAux][2] = aux2Y;
+
+            for (int c = 1; c < 2; c++) {
+                if (aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
+                    data[dataAux][0] = field[aux2X][aux2Y];
+                    data[dataAux][1] = aux2X;
+                    data[dataAux][2] = aux2Y;
                 }
             }
-            
+
+
             //Imprime los valores del arreglo de datos
-            /*for(int i = 0; i < 8; i++) {
+
+
+
+            //~~~~ FUNCIÓN DE MOVIMIENTO DE AVELINE ~~~~~
+            // Aveline solo puede moverse a las casillas adyacentes a la que esta
+            // Aveline no puede moverse en diagonal ni a una casilla que no este vacía
+            // Si la casilla es 0, se mueve a la casilla
+            ArrayList<int[]> movimientosPosibles = new ArrayList<int[]>();
+
+            for(int i = 0; i < dataAux; i++) {
+                if(data[i][0] == 0) {
+                    int[] movimiento = new int[2];
+                    movimiento[0] = data[i][1];
+                    movimiento[1] = data[i][2];
+                    movimientosPosibles.add(movimiento);
+                }
+            }
+
+            //Crear un número aleatorio para elegir un movimiento
+            Random r = new Random();
+            int random = r.nextInt(movimientosPosibles.size());
+
+
+            //Mover aveline a la casilla aleatoria
+            aveline.setCorX(movimientosPosibles.get(random)[0]);
+            aveline.setCorY(movimientosPosibles.get(random)[1]);
+
+            //Hacer la posicion previa de Aveline 0
+            field[currentX][currentY] = 0;
+
+            field[aveline.getCorX()][aveline.getCorY()] = 1;
+
+            for(int i = 0; i < 8; i++) {
                 System.out.println("Valor: " + data[i][0] + " X: " + data[i][1] + " Y: " + data[i][2]);
-            }*/
-            
-            //~~~~ FUNCION DE MOVIMIENTO DE AVELINE ~~~~
-            int [] basicMovementArray = new int[4];
-            basicMovementArray[0] = 
-            
-            game = 0;
+            }
+
+            System.out.println(dataAux);
+
+            //Imrpimir el arreglo de movimientos posibles
+            for(int i = 0; i < movimientosPosibles.size(); i++) {
+                System.out.println("X: " + movimientosPosibles.get(i)[0] + " Y: " + movimientosPosibles.get(i)[1]);
+            }
+
+            System.out.println("Coordenada X: " + aveline.getCorX() + " Coordenada Y: " + aveline.getCorY());
+
+            game--;
+
         }
     }
 }
