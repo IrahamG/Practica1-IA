@@ -18,6 +18,7 @@ public class IATesting {
         2 - El enemigo
         3 - Pozo
         4 - Tesoro
+        5 - Casilla previamente visitada
         Tanto los pozos como el teesoro seran estaticos y ellos y el monstruo
         serán generados al azar.
         */
@@ -112,11 +113,13 @@ public class IATesting {
             }    
         }
 
-        
+
+        int turnos = 0;
+
+
         // ~~~~~~~~~~~~~~~~~~~ BUCLE PRINCIPAL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // GAMELOOP
-        int game = 8;
-        while(game != 1) {
+        while(aveline.getStatus() == 1) {
 
 
             // ~~~ MOSTRAR LA MATRIZ EN PANTALLA ~~~
@@ -128,136 +131,302 @@ public class IATesting {
             }
             System.out.print("\n");
 
-            //ESCANEAR CASILLAS ADYACENTES
-            // Matriz para almacenar los datos de las casillas adyacentes: valor y coordenadas
-            int[][] data = new int[8][3];
+            if(turnos != 3) {
 
-            //Almacenando las coordenadas actuales de Aveline
-            int currentX = aveline.getCorX();
-            int currentY = aveline.getCorY();
-            
-            /*Coordenadas auxiliares
-            Las auxiliares 1: Empiezan en la esquina inferior derecha
-            Las auxiliares 2: Empiezan en la esquina superior izquierda
-            */
-            int auxX = currentX + 1;
-            int auxY = currentY + 1;
+                //~~~~~~~~~~~~~~~~~~~~~ESCANEAR CASILLAS ADYACENTES~~~~~~~~~~~~~~~~~~~~~~~~~
+                // Matriz para almacenar los datos de las casillas adyacentes: valor y coordenadas
+                int[][] data = new int[8][3];
 
-            int aux2X = currentX - 1;
-            int aux2Y = currentY - 1;
+                //Almacenando las coordenadas actuales de Aveline
+                int currentX = aveline.getCorX();
+                int currentY = aveline.getCorY();
 
-            // Variable auxiliar para el arreglo de datos
-            int dataAux = 0;
+                /*Coordenadas auxiliares
+                Las auxiliares 1: Empiezan en la esquina inferior derecha
+                Las auxiliares 2: Empiezan en la esquina superior izquierda
+                */
+                int auxX = currentX + 1;
+                int auxY = currentY + 1;
 
-            //Coordenadas auxiliares (posición en la esquina superior izquiera de Aveline)
+                int aux2X = currentX - 1;
+                int aux2Y = currentY - 1;
 
-            //~~~~~~Bucles para almacenar las casillas en un arreglo.~~~~~
-            /*
-            El bucle inicia en la esquina inferior derecha y continua hacia arriba.
-            Si las coordenadas no existen en el area de juego no se almacena en el arreglo
-            Si las coordenadas se encuentran se guarda en el arreglo un arreglo de la siguiente manera:
-            [valor, X, Y]
-            */
-            for (int c = 1; c < 4; c++) {
-                if (auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
-                    data[dataAux][0] = field[auxX][auxY];
-                    data[dataAux][1] = auxX;
-                    data[dataAux][2] = auxY;
-                    dataAux++;
+                // Variable auxiliar para el arreglo de datos
+                int dataAux = 0;
+
+                //Coordenadas auxiliares (posición en la esquina superior izquiera de Aveline)
+
+                //~~~~~~Bucles para almacenar las casillas en un arreglo.~~~~~
+                /*
+                El bucle inicia en la esquina inferior derecha y continua hacia arriba.
+                Si las coordenadas no existen en el area de juego no se almacena en el arreglo
+                Si las coordenadas se encuentran se guarda en el arreglo un arreglo de la siguiente manera:
+                [valor, X, Y]
+                */
+                for (int c = 1; c < 4; c++) {
+                    if (auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
+                        data[dataAux][0] = field[auxX][auxY];
+                        data[dataAux][1] = auxX;
+                        data[dataAux][2] = auxY;
+                        dataAux++;
+                    }
+                    auxX--;
+
                 }
-                auxX--;
+                //Se reinician las coordenadas auxiliares
+                auxX = currentX + 1;
+                auxY = currentY;
 
-            }
-            //Se reinician las coordenadas auxiliares
-            auxX = currentX + 1;
-            auxY = currentY;
-            
-            /*
-            El bucle inicia debajo de la coordenada y continua hacia la izquierda en X
-            */
-            for (int c = 1; c < 3; c++) {
-                if (auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
-                    data[dataAux][0] = field[auxX][auxY];
-                    data[dataAux][1] = auxX;
-                    data[dataAux][2] = auxY;
-                    dataAux++;
+                /*
+                El bucle inicia debajo de la coordenada y continua hacia la izquierda en X
+                */
+                for (int c = 1; c < 3; c++) {
+                    if (auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
+                        data[dataAux][0] = field[auxX][auxY];
+                        data[dataAux][1] = auxX;
+                        data[dataAux][2] = auxY;
+                        dataAux++;
+                    }
+                    auxY--;
                 }
-                auxY--;
-            }
-            
-            /*
-            El bucle inicia en la esquina superior izquiera y continua hacia la derecha en X
-            Utiliza las variables auxiliares 2
-            */
-            for (int c = 1; c < 3; c++) {
-                if (aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
-                    data[dataAux][0] = field[aux2X][aux2Y];
-                    data[dataAux][1] = aux2X;
-                    data[dataAux][2] = aux2Y;
-                    dataAux++;
+
+                /*
+                El bucle inicia en la esquina superior izquiera y continua hacia la derecha en X
+                Utiliza las variables auxiliares 2
+                */
+                for (int c = 1; c < 3; c++) {
+                    if (aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
+                        data[dataAux][0] = field[aux2X][aux2Y];
+                        data[dataAux][1] = aux2X;
+                        data[dataAux][2] = aux2Y;
+                        dataAux++;
+                    }
+                    aux2Y++;
                 }
-                aux2Y++;
-            }
 
-            aux2X = currentX;
-            aux2Y = currentY - 1;
+                aux2X = currentX;
+                aux2Y = currentY - 1;
 
-            for (int c = 1; c < 2; c++) {
-                if (aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
-                    data[dataAux][0] = field[aux2X][aux2Y];
-                    data[dataAux][1] = aux2X;
-                    data[dataAux][2] = aux2Y;
+                for (int c = 1; c < 2; c++) {
+                    if (aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
+                        data[dataAux][0] = field[aux2X][aux2Y];
+                        data[dataAux][1] = aux2X;
+                        data[dataAux][2] = aux2Y;
+                    }
                 }
-            }
 
 
-            //Imprime los valores del arreglo de datos
+                //Imprime los valores del arreglo de datos
 
 
+                //~~~~ FUNCIÓN DE MOVIMIENTO DE AVELINE ~~~~~
+                // Aveline solo puede moverse a las casillas adyacentes a la que esta
+                // Aveline no puede moverse en diagonal ni a una casilla que no este vacía
+                // Si la casilla es 0, se mueve a la casilla
+                ArrayList<int[]> movimientosPosibles = new ArrayList<int[]>();
 
-            //~~~~ FUNCIÓN DE MOVIMIENTO DE AVELINE ~~~~~
-            // Aveline solo puede moverse a las casillas adyacentes a la que esta
-            // Aveline no puede moverse en diagonal ni a una casilla que no este vacía
-            // Si la casilla es 0, se mueve a la casilla
-            ArrayList<int[]> movimientosPosibles = new ArrayList<int[]>();
+                for (int i = 0; i < dataAux; i++) {
+                    if (data[i][0] == 0) {
+                        int[] movimiento = new int[2];
+                        if(data[i][1] == currentX-1 && data[i][2] == currentY) {
+                            movimiento[0] = data[i][1];
+                            movimiento[1] = data[i][2];
+                            movimientosPosibles.add(movimiento);
+                        } else if(data[i][1] == currentX+1 && data[i][2] == currentY) {
+                            movimiento[0] = data[i][1];
+                            movimiento[1] = data[i][2];
+                            movimientosPosibles.add(movimiento);
+                        } else if(data[i][1] == currentX && data[i][2] == currentY-1) {
+                            movimiento[0] = data[i][1];
+                            movimiento[1] = data[i][2];
+                            movimientosPosibles.add(movimiento);
+                        } else if(data[i][1] == currentX && data[i][2] == currentY+1) {
+                            movimiento[0] = data[i][1];
+                            movimiento[1] = data[i][2];
+                            movimientosPosibles.add(movimiento);
+                        }
 
-            for(int i = 0; i < dataAux; i++) {
-                if(data[i][0] == 0) {
-                    int[] movimiento = new int[2];
-                    movimiento[0] = data[i][1];
-                    movimiento[1] = data[i][2];
-                    movimientosPosibles.add(movimiento);
+                    }
                 }
+
+                if(movimientosPosibles.size() == 0) {
+                    System.out.println("Aveline no puede moverse");
+                    break;
+                }
+
+                //Crear un número aleatorio para elegir un movimiento
+                Random r = new Random();
+                int random = r.nextInt(movimientosPosibles.size());
+
+
+                //Mover aveline a la casilla aleatoria
+                aveline.setCorX(movimientosPosibles.get(random)[0]);
+                aveline.setCorY(movimientosPosibles.get(random)[1]);
+
+                //Comprobar si Aveline se encuentra en el tesoro
+                if (aveline.getCorX() == tesoro.getCorX() && aveline.getCorY() == tesoro.getCorY()) {
+                    System.out.println("Aveline ha encontrado el tesoro!");
+                    aveline.setStatus(2);
+                }
+
+                //Hacer la posición previa de Aveline 5
+                field[currentX][currentY] = 0;
+
+                field[aveline.getCorX()][aveline.getCorY()] = 1;
+
+                for(int i = 0; i < 8; i++) {
+                    System.out.println("Valor: " + data[i][0] + " X: " + data[i][1] + " Y: " + data[i][2]);
+                }
+
+                //Imprimir el arreglo de movimientos posibles
+                for(int i = 0; i < movimientosPosibles.size(); i++) {
+                    System.out.println("X: " + movimientosPosibles.get(i)[0] + " Y: " + movimientosPosibles.get(i)[1]);
+                }
+
+                System.out.println("Coordenada X: " + aveline.getCorX() + " Coordenada Y: " + aveline.getCorY());
+
+                turnos++;
             }
 
-            //Crear un número aleatorio para elegir un movimiento
-            Random r = new Random();
-            int random = r.nextInt(movimientosPosibles.size());
+            // MOVIMIENTO DE ERINA
+            // Erina se mueve cada 3 turnos de Aveline
+            if(turnos == 3) {
+                //~~~~~~~~~~~~~~~~~~~~~ESCANEAR CASILLAS ADYACENTES~~~~~~~~~~~~~~~~~~~~~~~~~
+                // Matriz para almacenar los datos de las casillas adyacentes: valor y coordenadas
+                int[][] data = new int[8][3];
+
+                //Almacenando las coordenadas actuales de Aveline
+                int currentX = erina.getCoorX();
+                int currentY = erina.getCoorY();
+
+                /*Coordenadas auxiliares
+                Las auxiliares 1: Empiezan en la esquina inferior derecha
+                Las auxiliares 2: Empiezan en la esquina superior izquierda
+                */
+                int auxX = currentX + 1;
+                int auxY = currentY + 1;
+
+                int aux2X = currentX - 1;
+                int aux2Y = currentY - 1;
+
+                // Variable auxiliar para el arreglo de datos
+                int dataAux = 0;
+
+                //Coordenadas auxiliares (posición en la esquina superior izquiera de Aveline)
+
+                //~~~~~~Bucles para almacenar las casillas en un arreglo.~~~~~
+                /*
+                El bucle inicia en la esquina inferior derecha y continua hacia arriba.
+                Si las coordenadas no existen en el area de juego no se almacena en el arreglo
+                Si las coordenadas se encuentran se guarda en el arreglo un arreglo de la siguiente manera:
+                [valor, X, Y]
+                */
+                for (int c = 1; c < 4; c++) {
+                    if (auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
+                        data[dataAux][0] = field[auxX][auxY];
+                        data[dataAux][1] = auxX;
+                        data[dataAux][2] = auxY;
+                        dataAux++;
+                    }
+                    auxX--;
+
+                }
+                //Se reinician las coordenadas auxiliares
+                auxX = currentX + 1;
+                auxY = currentY;
+
+                /*
+                El bucle inicia debajo de la coordenada y continua hacia la izquierda en X
+                */
+                for (int c = 1; c < 3; c++) {
+                    if (auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
+                        data[dataAux][0] = field[auxX][auxY];
+                        data[dataAux][1] = auxX;
+                        data[dataAux][2] = auxY;
+                        dataAux++;
+                    }
+                    auxY--;
+                }
+
+                /*
+                El bucle inicia en la esquina superior izquiera y continua hacia la derecha en X
+                Utiliza las variables auxiliares 2
+                */
+                for (int c = 1; c < 3; c++) {
+                    if (aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
+                        data[dataAux][0] = field[aux2X][aux2Y];
+                        data[dataAux][1] = aux2X;
+                        data[dataAux][2] = aux2Y;
+                        dataAux++;
+                    }
+                    aux2Y++;
+                }
+
+                aux2X = currentX;
+                aux2Y = currentY - 1;
+
+                for (int c = 1; c < 2; c++) {
+                    if (aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
+                        data[dataAux][0] = field[aux2X][aux2Y];
+                        data[dataAux][1] = aux2X;
+                        data[dataAux][2] = aux2Y;
+                    }
+                }
 
 
-            //Mover aveline a la casilla aleatoria
-            aveline.setCorX(movimientosPosibles.get(random)[0]);
-            aveline.setCorY(movimientosPosibles.get(random)[1]);
+                //~~~~~ FUNCIÓN DE MOVIMIENTO DE ERINA ~~~~~
+                //Arreglo para almacenar los movimientos posibles
+                ArrayList<int[]> movimientosPosibles = new ArrayList<int[]>();
 
-            //Hacer la posicion previa de Aveline 0
-            field[currentX][currentY] = 0;
+                for (int i = 0; i < dataAux; i++) {
+                    if (data[i][0] == 0) {
+                        int[] movimiento = new int[2];
+                        movimiento[0] = data[i][1];
+                        movimiento[1] = data[i][2];
+                        movimientosPosibles.add(movimiento);
+                    }
+                }
 
-            field[aveline.getCorX()][aveline.getCorY()] = 1;
+                if(movimientosPosibles.size() == 0) {
+                    System.out.println("Erina no puede moverse");
+                    break;
+                }
 
-            for(int i = 0; i < 8; i++) {
-                System.out.println("Valor: " + data[i][0] + " X: " + data[i][1] + " Y: " + data[i][2]);
+                //Crear un número aleatorio para elegir un movimiento
+                Random r = new Random();
+                int random = r.nextInt(movimientosPosibles.size());
+
+
+                //Mover aveline a la casilla aleatoria
+                erina.setCoorX(movimientosPosibles.get(random)[0]);
+                erina.setCoorY(movimientosPosibles.get(random)[1]);
+
+                //Comprobar si Erina está en la casilla de Aveline
+                if (erina.getCoorX() == aveline.getCorX() && erina.getCoorY() == aveline.getCorY()) {
+                    System.out.println("Erina ha ganado");
+                    break;
+                }
+
+                //Hacer la posición previa de Erina 0
+                field[currentX][currentY] = 0;
+
+                field[erina.getCoorX()][erina.getCoorY()] = 2;
+
+                for(int i = 0; i < 8; i++) {
+                    System.out.println("Valor: " + data[i][0] + " X: " + data[i][1] + " Y: " + data[i][2]);
+                }
+
+                //Imprimir el arreglo de movimientos posibles
+                for(int i = 0; i < movimientosPosibles.size(); i++) {
+                    System.out.println("X: " + movimientosPosibles.get(i)[0] + " Y: " + movimientosPosibles.get(i)[1]);
+                }
+
+                System.out.println("Coordenada X: " + erina.getCoorX() + " Coordenada Y: " + erina.getCoorY());
+
+                turnos = 0;
+
             }
 
-            System.out.println(dataAux);
-
-            //Imrpimir el arreglo de movimientos posibles
-            for(int i = 0; i < movimientosPosibles.size(); i++) {
-                System.out.println("X: " + movimientosPosibles.get(i)[0] + " Y: " + movimientosPosibles.get(i)[1]);
-            }
-
-            System.out.println("Coordenada X: " + aveline.getCorX() + " Coordenada Y: " + aveline.getCorY());
-
-            game--;
 
         }
     }
