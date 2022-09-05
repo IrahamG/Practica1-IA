@@ -225,9 +225,11 @@ public class IATesting {
                 // Si la casilla es 0, se mueve a la casilla
                 ArrayList<int[]> movimientosPosibles = new ArrayList<int[]>();
 
-                for (int i = 0; i < dataAux; i++) {
-                    if (data[i][0] == 0) {
+                //Iterar las casillas adyacentes para encontrar las casillas a las que se puede mover
+                for (int i = 0; i <= dataAux; i++) {
                         int[] movimiento = new int[2];
+                        //System.out.println("Imprimir las coordenadas a evaluar: ");
+                        //System.out.println(data[i][1] + " " + data[i][2]);
                         if(data[i][1] == currentX-1 && data[i][2] == currentY) {
                             movimiento[0] = data[i][1];
                             movimiento[1] = data[i][2];
@@ -245,8 +247,6 @@ public class IATesting {
                             movimiento[1] = data[i][2];
                             movimientosPosibles.add(movimiento);
                         }
-
-                    }
                 }
 
                 if(movimientosPosibles.size() == 0) {
