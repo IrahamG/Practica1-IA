@@ -1,7 +1,9 @@
 package com.mycompany.iatesting;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -10,7 +12,7 @@ import java.util.Random;
 public class IATesting {
     
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
         /*
         Los elementos del campo pueden ser representados con valores
         numericos:
@@ -94,8 +96,8 @@ public class IATesting {
         // Pozo 1
         int p1Val = 1; // Variable para evaluar el while
         while(p1Val == 1) {
-            if(field[pozo1.getCorX()][pozo2.getCorY()] == 0) {
-                field[pozo1.getCorX()][pozo2.getCorY()] = 3;
+            if(field[pozo1.getCorX()][pozo1.getCorY()] == 0) {
+                field[pozo1.getCorX()][pozo1.getCorY()] = 3;
                 p1Val = 0;
             } else {
                 pozo1.genCor();
@@ -105,8 +107,8 @@ public class IATesting {
         // Pozo 2
         int p2Val = 1;
         while(p2Val == 1) {
-            if(field[pozo1.getCorX()][pozo2.getCorY()] == 0) {
-                field[pozo1.getCorX()][pozo2.getCorY()] = 3;
+            if(field[pozo2.getCorX()][pozo2.getCorY()] == 0) {
+                field[pozo2.getCorX()][pozo2.getCorY()] = 3;
                 p2Val = 0;
             } else {
                 pozo2.genCor();
@@ -115,13 +117,15 @@ public class IATesting {
 
 
         int turnos = 0;
-
-
+        //Arreglo de casillas prohibidas. Se encuentra fuera del bucle por que es un arreglo que permanece
+        //a lo largo de la partida
+        ArrayList<int[]> casillasProhibidas = new ArrayList<int[]>();
+        
+        
         // ~~~~~~~~~~~~~~~~~~~ BUCLE PRINCIPAL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // GAMELOOP
-        while(aveline.getStatus() == 1) {
-
-
+        while(true) {
+            
             // ~~~ MOSTRAR LA MATRIZ EN PANTALLA ~~~
             for (int i = 0; i < field.length; i++) {
                 for (int j = 0; j < field.length; j++) {
@@ -129,9 +133,19 @@ public class IATesting {
                 }
                 System.out.print("\n");
             }
-            System.out.print("\n");
+            System.out.print("\n"); 
+            
+            if (aveline.getStatus() == 2) {
+                break;
+            }
+            
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            //~~~~~~ TURNO DE AVELINE ~~~~~~~~~~~
+            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+           
             if(turnos != 3) {
+                int[] coordenadasProhibidas = new int[2];
 
                 //~~~~~~~~~~~~~~~~~~~~~ESCANEAR CASILLAS ADYACENTES~~~~~~~~~~~~~~~~~~~~~~~~~
                 // Matriz para almacenar los datos de las casillas adyacentes: valor y coordenadas
@@ -153,6 +167,8 @@ public class IATesting {
 
                 // Variable auxiliar para el arreglo de datos
                 int dataAux = 0;
+                
+                
 
                 //Coordenadas auxiliares (posición en la esquina superior izquiera de Aveline)
 
@@ -165,6 +181,11 @@ public class IATesting {
                 */
                 for (int c = 1; c < 4; c++) {
                     if (auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
+                        if(field[auxX][auxY] == 3) {
+                            coordenadasProhibidas[0] = auxX;
+                            coordenadasProhibidas[1] = auxY;
+                            casillasProhibidas.add(coordenadasProhibidas);
+                        }
                         data[dataAux][0] = field[auxX][auxY];
                         data[dataAux][1] = auxX;
                         data[dataAux][2] = auxY;
@@ -182,6 +203,11 @@ public class IATesting {
                 */
                 for (int c = 1; c < 3; c++) {
                     if (auxX <= 4 && auxX >= 0 && auxY <= 4 && auxY >= 0) {
+                        if(field[auxX][auxY] == 3) {
+                            coordenadasProhibidas[0] = auxX;
+                            coordenadasProhibidas[1] = auxY;
+                            casillasProhibidas.add(coordenadasProhibidas);
+                        }
                         data[dataAux][0] = field[auxX][auxY];
                         data[dataAux][1] = auxX;
                         data[dataAux][2] = auxY;
@@ -196,6 +222,11 @@ public class IATesting {
                 */
                 for (int c = 1; c < 3; c++) {
                     if (aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
+                        if(field[aux2X][aux2Y] == 3) {
+                            coordenadasProhibidas[0] = auxX;
+                            coordenadasProhibidas[1] = auxY;
+                            casillasProhibidas.add(coordenadasProhibidas);
+                        }
                         data[dataAux][0] = field[aux2X][aux2Y];
                         data[dataAux][1] = aux2X;
                         data[dataAux][2] = aux2Y;
@@ -209,14 +240,21 @@ public class IATesting {
 
                 for (int c = 1; c < 2; c++) {
                     if (aux2X <= 4 && aux2X >= 0 && aux2Y <= 4 && aux2Y >= 0) {
+                        if(field[aux2X][aux2Y] == 3) {
+                            coordenadasProhibidas[0] = auxX;
+                            coordenadasProhibidas[1] = auxY;
+                            casillasProhibidas.add(coordenadasProhibidas);
+                        }
                         data[dataAux][0] = field[aux2X][aux2Y];
                         data[dataAux][1] = aux2X;
                         data[dataAux][2] = aux2Y;
                     }
                 }
 
+                
+                
 
-                //Imprime los valores del arreglo de datos
+                //FIN DE LA ETAPA DE ESCANEO
 
 
                 //~~~~ FUNCIÓN DE MOVIMIENTO DE AVELINE ~~~~~
@@ -228,25 +266,25 @@ public class IATesting {
                 //Iterar las casillas adyacentes para encontrar las casillas a las que se puede mover
                 for (int i = 0; i <= dataAux; i++) {
                         int[] movimiento = new int[2];
-                        //System.out.println("Imprimir las coordenadas a evaluar: ");
-                        //System.out.println(data[i][1] + " " + data[i][2]);
-                        if(data[i][1] == currentX-1 && data[i][2] == currentY) {
-                            movimiento[0] = data[i][1];
-                            movimiento[1] = data[i][2];
-                            movimientosPosibles.add(movimiento);
-                        } else if(data[i][1] == currentX+1 && data[i][2] == currentY) {
-                            movimiento[0] = data[i][1];
-                            movimiento[1] = data[i][2];
-                            movimientosPosibles.add(movimiento);
-                        } else if(data[i][1] == currentX && data[i][2] == currentY-1) {
-                            movimiento[0] = data[i][1];
-                            movimiento[1] = data[i][2];
-                            movimientosPosibles.add(movimiento);
-                        } else if(data[i][1] == currentX && data[i][2] == currentY+1) {
-                            movimiento[0] = data[i][1];
-                            movimiento[1] = data[i][2];
-                            movimientosPosibles.add(movimiento);
-                        }
+                        
+                            if(data[i][1] == currentX-1 && data[i][2] == currentY && field[data[i][1]][data[i][2]] != 5) {
+                                movimiento[0] = data[i][1];
+                                movimiento[1] = data[i][2];
+                                movimientosPosibles.add(movimiento);
+                            } else if(data[i][1] == currentX+1 && data[i][2] == currentY && field[data[i][1]][data[i][2]] != 5) {
+                                movimiento[0] = data[i][1];
+                                movimiento[1] = data[i][2];
+                                movimientosPosibles.add(movimiento);
+                            } else if(data[i][1] == currentX && data[i][2] == currentY-1 && field[data[i][1]][data[i][2]] != 5) {
+                                movimiento[0] = data[i][1];
+                                movimiento[1] = data[i][2];
+                                movimientosPosibles.add(movimiento);
+                            } else if(data[i][1] == currentX && data[i][2] == currentY+1 && field[data[i][1]][data[i][2]] != 5) {
+                                movimiento[0] = data[i][1];
+                                movimiento[1] = data[i][2];
+                                movimientosPosibles.add(movimiento);
+                            }
+                        
                 }
 
                 if(movimientosPosibles.size() == 0) {
@@ -268,13 +306,28 @@ public class IATesting {
                     System.out.println("Aveline ha encontrado el tesoro!");
                     aveline.setStatus(2);
                 }
+                
+                if (aveline.getCorX() == pozo1.getCorX() && aveline.getCorY() == pozo1.getCorY()) {
+                    System.out.println("Aveline ha caido en un pozo!");
+                    aveline.setStatus(2);
+                }
+                
+                if (aveline.getCorX() == pozo2.getCorX() && aveline.getCorY() == pozo2.getCorY()) {
+                    System.out.println("Aveline ha caido en un pozo!");
+                    aveline.setStatus(2);
+                }
+                
+                if (aveline.getCorX() == erina.getCoorX() && aveline.getCorY() == erina.getCoorY()) {
+                    System.out.println("Erina ha atrapado a Aveline!");
+                    aveline.setStatus(2);
+                }
 
                 //Hacer la posición previa de Aveline 5
-                field[currentX][currentY] = 0;
+                field[currentX][currentY] = 5;
 
                 field[aveline.getCorX()][aveline.getCorY()] = 1;
 
-                for(int i = 0; i < 8; i++) {
+                /*for(int i = 0; i < 8; i++) {
                     System.out.println("Valor: " + data[i][0] + " X: " + data[i][1] + " Y: " + data[i][2]);
                 }
 
@@ -283,7 +336,7 @@ public class IATesting {
                     System.out.println("X: " + movimientosPosibles.get(i)[0] + " Y: " + movimientosPosibles.get(i)[1]);
                 }
 
-                System.out.println("Coordenada X: " + aveline.getCorX() + " Coordenada Y: " + aveline.getCorY());
+                System.out.println("Coordenada X: " + aveline.getCorX() + " Coordenada Y: " + aveline.getCorY()); */
 
                 turnos++;
             }
@@ -412,7 +465,7 @@ public class IATesting {
 
                 field[erina.getCoorX()][erina.getCoorY()] = 2;
 
-                for(int i = 0; i < 8; i++) {
+                /*for(int i = 0; i < 8; i++) {
                     System.out.println("Valor: " + data[i][0] + " X: " + data[i][1] + " Y: " + data[i][2]);
                 }
 
@@ -421,12 +474,13 @@ public class IATesting {
                     System.out.println("X: " + movimientosPosibles.get(i)[0] + " Y: " + movimientosPosibles.get(i)[1]);
                 }
 
-                System.out.println("Coordenada X: " + erina.getCoorX() + " Coordenada Y: " + erina.getCoorY());
+                System.out.println("Coordenada X: " + erina.getCoorX() + " Coordenada Y: " + erina.getCoorY()); */
 
                 turnos = 0;
 
             }
 
+            TimeUnit.SECONDS.sleep(1);
 
         }
     }
